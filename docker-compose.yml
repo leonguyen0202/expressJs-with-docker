@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: nodejs
+    container_name: web
+    volumes:
+      - ./:/usr/src/app/
+    ports:
+      - "${APP_PORT}:3000"
+    env_file: .env
+    environment:
+      - MONGO_USERNAME=$MONGO_USERNAME
+      - MONGO_PASSWORD=$MONGO_PASSWORD
+      - MONGO_HOSTNAME=db
+      - MONGO_PORT=$MONGO_PORT
+      - MONGO_DB=$MONGO_DB
+    links:
+      - redis
+    depends_on:
+      - redis
+      - db
+    networks:
+      - express
+
+  redis:
+    image: redis
+    container_name: redis
+    restart: unless-stopped
+    networks:
+      - express
+
+  #MongoDB Service
+  db:
+    image: mongo:latest
+    container_name: mongo-db
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=$MONGO_USERNAME
+      - MONGO_INITDB_ROOT_PASSWORD=$MONGO_PASSWORD
+    volumes:
+      - dbdata:/data/db
+    networks:
+      - express
+
+networks:
+  express:
+    driver: bridge
+
+volumes:
+  dbdata:
+  node_modules:
