@@ -16,7 +16,9 @@ RUN npm install -g npm
 # copy app source to destination container
 COPY . .
 
-# expose container port
-EXPOSE 9000
+ARG DOCKER_PORT=${DOCKER_PORT}
 
-CMD npm start
+# expose container port
+EXPOSE ${DOCKER_PORT}
+
+CMD ["npm", "start"]

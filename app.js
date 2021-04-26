@@ -25,7 +25,10 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use("/static", express.static("public")); //to access the files in public folder
 
-app.use("/", indexRouter);
+// app.use("/", indexRouter);
+app.get("/", function (req, res) {
+  res.send("Hello world\n");
+});
 app.use("/users", usersRouter);
 app.use("/dev", developmentRouter);
 
@@ -65,7 +68,7 @@ db.mongoose
   });
 
 // PORT define
-const PORT = process.env.APP_PORT || 5000;
+const PORT = process.env.DOCKER_PORT || 3000;
 
 app.listen(PORT, () => {
   console.log(`Server is running on port: ${PORT}`);

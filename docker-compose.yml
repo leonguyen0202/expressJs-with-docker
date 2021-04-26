@@ -7,10 +7,11 @@ services:
       dockerfile: Dockerfile
     image: nodejs
     container_name: web
+    restart: always
     volumes:
       - ./:/usr/src/app/
     ports:
-      - "5000:3000"
+      - "${APP_PORT}:${DOCKER_PORT}"
     env_file: .env
     environment:
       - MONGO_USERNAME=$MONGO_USERNAME
