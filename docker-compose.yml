@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   web:
@@ -10,7 +10,7 @@ services:
     volumes:
       - ./:/usr/src/app/
     ports:
-      - "${APP_PORT}:3000"
+      - "5000:3000"
     env_file: .env
     environment:
       - MONGO_USERNAME=$MONGO_USERNAME
@@ -37,13 +37,18 @@ services:
   db:
     image: mongo:latest
     container_name: mongo-db
-    restart: unless-stopped
+    restart: always
     env_file: .env
+    ports:
+      - "27017:27017"
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=$MONGO_USERNAME
-      - MONGO_INITDB_ROOT_PASSWORD=$MONGO_PASSWORD
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_DB}
     volumes:
-      - dbdata:/data/db
+      - ./docker/mongodb/config/mongod.conf:/etc/mongod.conf
+      - ./docker/mongodb/data/log/:/var/log/mongodb/
+      - ./docker/mongodb/data/db/:/data/db
     networks:
       - express
 
@@ -52,5 +57,7 @@ networks:
     driver: bridge
 
 volumes:
-  dbdata:
   node_modules:
+    driver: local
+  dbdata:
+    driver: local

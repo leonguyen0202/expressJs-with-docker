@@ -10,11 +10,13 @@ WORKDIR /usr/src/app/
 # this is done before the following COPY command to take advantage of layer caching
 COPY package.json .
 RUN npm install
+RUN npm update
+RUN npm install -g npm
 
 # copy app source to destination container
 COPY . .
 
 # expose container port
-EXPOSE 3000
+EXPOSE 9000
 
 CMD npm start

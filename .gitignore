@@ -23,3 +23,5 @@ yarn.lock
 # development file
 routes/development.routes.js
 src/config/db.config.js
+docker/mongodb/data/db/*
+docker/mongodb/data/log/*
