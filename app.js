@@ -4,11 +4,10 @@ import logger from "morgan";
 import cors from "cors";
 
 import db from "./src/models/index.js";
+// Create your db config named: db.config.js inside src/config.
 import db_const from "./src/config/db.config.js";
 
-import indexRouter from "./routes/index.js";
-import usersRouter from "./routes/users.js";
-import developmentRouter from "./routes/development.routes.js";
+// import indexRouter from "./routes/index.js";
 
 var app = express();
 
@@ -23,14 +22,9 @@ app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use("/static", express.static("public")); //to access the files in public folder
+app.use("/static", express.static("public")); // to access the files in public folder.
 
 // app.use("/", indexRouter);
-app.get("/", function (req, res) {
-  res.send("Hello world\n");
-});
-app.use("/users", usersRouter);
-app.use("/dev", developmentRouter);
 
 app.use((req, res, next) => {
   res.header(

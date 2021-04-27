@@ -1,7 +1,5 @@
-import categorySeeder from "./category/category.seeder.js";
-
 const seeder = {
-  categorySeeder,
+  // add your seeder class here.
 };
 
 export default seeder;
