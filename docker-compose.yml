@@ -1,32 +1,35 @@
-version: "3.8"
-
+version: '3.8'
 services:
-  web:
+  app:
     build:
       context: .
       dockerfile: Dockerfile
     image: nodejs
-    container_name: web
+    container_name: api
     restart: always
     volumes:
       - ./:/usr/src/app/
     ports:
       - "${APP_PORT}:${DOCKER_PORT}"
-    env_file: .env
-    environment:
-      - MONGO_USERNAME=$MONGO_USERNAME
-      - MONGO_PASSWORD=$MONGO_PASSWORD
-      - MONGO_HOSTNAME=db
-      - MONGO_PORT=$MONGO_PORT
-      - MONGO_DB=$MONGO_DB
-    links:
+    external_links:
+      - db
       - redis
     depends_on:
-      - redis
       - db
+      - redis
     networks:
       - express
-
+  db:
+    container_name: mongo-db
+    image: mongo:latest
+    ports:
+      - '27017:27017'
+    volumes:
+      - ./docker/mongodb/config/mongod.conf:/etc/mongod.conf
+      - ./docker/mongodb/data/log/:/var/log/mongodb/
+      - ./docker/mongodb/data/db/:/data/db
+    networks:
+      - express
   redis:
     image: redis
     container_name: redis
@@ -34,31 +37,6 @@ services:
     networks:
       - express
 
-  #MongoDB Service
-  db:
-    image: mongo:latest
-    container_name: mongo-db
-    restart: always
-    env_file: .env
-    ports:
-      - "27017:27017"
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
-      MONGO_INITDB_DATABASE: ${MONGO_DB}
-    volumes:
-      - ./docker/mongodb/config/mongod.conf:/etc/mongod.conf
-      - ./docker/mongodb/data/log/:/var/log/mongodb/
-      - ./docker/mongodb/data/db/:/data/db
-    networks:
-      - express
-
 networks:
   express:
     driver: bridge
-
-volumes:
-  node_modules:
-    driver: local
-  dbdata:
-    driver: local
